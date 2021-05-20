@@ -1,5 +1,6 @@
 package com.example.pedometer.controller;
 
+import com.example.pedometer.DTO.AppUserResponse;
 import com.example.pedometer.model.AppUser;
 import com.example.pedometer.service.AppUserService;
 import lombok.RequiredArgsConstructor;
@@ -17,17 +18,17 @@ public class AppUserController {
     private final AppUserService appUserService;
 
     @GetMapping
-    public ResponseEntity<List<AppUser>> getAllAppUsers() {
+    public ResponseEntity<List<AppUserResponse>> getAllAppUsers() {
         return ResponseEntity.ok(appUserService.getAll());
     }
 
     @GetMapping("/get/one")
-    public ResponseEntity<AppUser> getOneByEmail(@RequestParam  String email) {
+    public ResponseEntity<AppUserResponse> getOneByEmail(@RequestParam  String email) {
         return ResponseEntity.ok(appUserService.getAppUserByEmail(email));
     }
 
     @PostMapping("/add")
-    public ResponseEntity<AppUser> addAppUser(@RequestBody AppUser appUser) {
+    public ResponseEntity<AppUserResponse> addAppUser(@RequestBody AppUser appUser) {
         return ResponseEntity.ok(appUserService.addAppUser(appUser));
     }
 
@@ -38,10 +39,10 @@ public class AppUserController {
     }
 
     @PostMapping("/add/steps")
-    public ResponseEntity<AppUser> addStepsToAppUser(@RequestBody AppUser appUser,
+    public ResponseEntity<AppUserResponse> addStepsToAppUser(@RequestBody AppUser appUser,
                                                      @RequestParam int steps,
                                                      @RequestParam LocalDate date) {
-        return ResponseEntity.ok(appUserService.addAppUser(appUser));
+        return ResponseEntity.ok(appUserService.addStepsToUser(appUser, steps, date));
     }
 
 }
