@@ -5,6 +5,7 @@ import com.example.pedometer.model.AppUser;
 import com.example.pedometer.service.AppUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -41,7 +42,7 @@ public class AppUserController {
     @PostMapping("/add/steps")
     public ResponseEntity<AppUserResponse> addStepsToAppUser(@RequestBody AppUser appUser,
                                                      @RequestParam int steps,
-                                                     @RequestParam LocalDate date) {
+                                                     @RequestParam @Nullable LocalDate date) {
         return ResponseEntity.ok(appUserService.addStepsToUser(appUser, steps, date));
     }
 

@@ -4,9 +4,11 @@ import com.example.pedometer.DTO.AppUserResponse;
 import com.example.pedometer.model.AppUser;
 import com.example.pedometer.model.Steps;
 import com.example.pedometer.repository.AppUserRepository;
+import com.example.pedometer.repository.StepsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
@@ -19,6 +21,8 @@ import java.util.stream.Collectors;
 public class AppUserService {
 
     private final AppUserRepository appUserRepository;
+
+    private final StepsRepository stepsRepository;
 
     public List<AppUserResponse> getAll() {
         return appUserRepository.findAll().stream()
@@ -68,6 +72,7 @@ public class AppUserService {
 
     }
 
+    @Transactional
     public AppUserResponse addStepsToUser(AppUser user, int steps, LocalDate date) {
         AppUser appUser = appUserRepository.findByEmail(user.getEmail())
                 .orElseThrow(() -> {
@@ -89,10 +94,11 @@ public class AppUserService {
                 }
             });
         } else {
-            appUser.getSteps().add(
-                    new Steps()
-                            .setSteps(steps)
-                            .setDate(finalDate));
+            Steps newSteps = new Steps()
+                    .setSteps(steps)
+                    .setDate(finalDate);
+
+            appUser.getSteps().add(stepsRepository.save(newSteps));
         }
 
         return appUserRepository.save(appUser)
