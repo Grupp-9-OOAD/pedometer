@@ -22,4 +22,8 @@ public class Steps {
     private LocalDate date;
     private int steps;
 
+    public void addToSteps(int newSteps) {
+        this.steps += newSteps;
+    }
+
 }

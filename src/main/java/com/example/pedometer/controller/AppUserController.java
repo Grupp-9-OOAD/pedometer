@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -34,6 +35,13 @@ public class AppUserController {
     public ResponseEntity<String> deleteAppUser(@RequestParam String email,
                                                 @RequestParam String password) {
         return ResponseEntity.ok(appUserService.deleteAppUser(email, password));
+    }
+
+    @PostMapping("/add/steps")
+    public ResponseEntity<AppUser> addStepsToAppUser(@RequestBody AppUser appUser,
+                                                     @RequestParam int steps,
+                                                     @RequestParam LocalDate date) {
+        return ResponseEntity.ok(appUserService.addAppUser(appUser));
     }
 
 }

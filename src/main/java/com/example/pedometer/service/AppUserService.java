@@ -1,12 +1,15 @@
 package com.example.pedometer.service;
 
+import com.example.pedometer.DTO.AppUserResponse;
 import com.example.pedometer.model.AppUser;
+import com.example.pedometer.model.Steps;
 import com.example.pedometer.repository.AppUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,13 +27,13 @@ public class AppUserService {
 
         Optional<AppUser> existingAppUser = appUserRepository.findByEmail(appUser.getEmail());
 
-        if (existingAppUser.isPresent()){
+        if (existingAppUser.isPresent()) {
             existingAppUser.get()
                     .setFirstName(appUser.getFirstName())
                     .setLastName(appUser.getLastName())
                     .setPassword(appUser.getPassword());
             return appUserRepository.save(existingAppUser.get());
-        }else {
+        } else {
             validateAppUser(appUser);
             return appUserRepository.save(appUser);
         }
@@ -40,10 +43,10 @@ public class AppUserService {
 
         appUserRepository.findByEmail(email)
                 .ifPresentOrElse(appUser -> {
-                    if (appUser.getPassword().equals(password)){
+                    if (appUser.getPassword().equals(password)) {
                         appUserRepository.deleteById(appUser.getId());
                     }
-                        }, () -> {
+                }, () -> {
                     throw new ResponseStatusException(HttpStatus.CONFLICT, "email does not exist");
                 });
 
@@ -59,8 +62,39 @@ public class AppUserService {
         return null;
     }
 
+    public AppUserResponse addStepsToUser(AppUser user, int steps, LocalDate date) {
+        AppUser appUser = appUserRepository.findByEmail(user.getEmail())
+                .orElseThrow(() -> {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Could not find user");
+                });
+
+        if (date == null) {
+            date = LocalDate.now();
+        }
+
+        LocalDate finalDate = date;
+
+
+        if (appUser.getSteps().stream()
+                .anyMatch(steps1 -> steps1.getDate().equals(finalDate))) {
+            appUser.getSteps().forEach(steps1 -> {
+                if (steps1.getDate().equals(finalDate)) {
+                    steps1.addToSteps(steps);
+                }
+            });
+        } else {
+            appUser.getSteps().add(
+                    new Steps()
+                            .setSteps(steps)
+                            .setDate(finalDate));
+        }
+
+        return appUserRepository.save(appUser)
+                .toResponse();
+    }
+
     private void validateAppUser(AppUser appUser) {
-        if (appUser.getEmail() == null || appUser.getFirstName() == null || appUser.getLastName() == null || appUser.getPassword() == null){
+        if (appUser.getEmail() == null || appUser.getFirstName() == null || appUser.getLastName() == null || appUser.getPassword() == null) {
             throw new ResponseStatusException(HttpStatus.NO_CONTENT, "user need to have a firstname, lastname, email and password");
         }
     }
