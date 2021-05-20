@@ -12,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -19,11 +20,13 @@ public class AppUserService {
 
     private final AppUserRepository appUserRepository;
 
-    public List<AppUser> getAll() {
-        return appUserRepository.findAll();
+    public List<AppUserResponse> getAll() {
+        return appUserRepository.findAll().stream()
+                .map(AppUser::toResponse)
+                .collect(Collectors.toList());
     }
 
-    public AppUser addAppUser(AppUser appUser) {
+    public AppUserResponse addAppUser(AppUser appUser) {
 
         Optional<AppUser> existingAppUser = appUserRepository.findByEmail(appUser.getEmail());
 
@@ -32,10 +35,12 @@ public class AppUserService {
                     .setFirstName(appUser.getFirstName())
                     .setLastName(appUser.getLastName())
                     .setPassword(appUser.getPassword());
-            return appUserRepository.save(existingAppUser.get());
+            return appUserRepository.save(existingAppUser.get())
+                    .toResponse();
         } else {
             validateAppUser(appUser);
-            return appUserRepository.save(appUser);
+            return appUserRepository.save(appUser)
+                    .toResponse();
         }
     }
 
@@ -53,13 +58,14 @@ public class AppUserService {
         return "User with email: " + email + " has been deleted";
     }
 
-    public AppUser getAppUserByEmail(String email) {
-        // return AppUserDTO
-        /*return appUserRepository.findByEmail(email)
-        .ifPresentOrElse(this::"need dto object!!!",
-                () -> { throw new ResponseStatusException(HttpStatus.NO_CONTENT, "no user found");
-        });*/
-        return null;
+    public AppUserResponse getAppUserByEmail(String email) {
+
+        AppUser appUser = appUserRepository.findByEmail(email)
+        .orElseThrow(() -> { throw new ResponseStatusException(HttpStatus.NO_CONTENT, "no user found");
+        });
+
+        return appUser.toResponse();
+
     }
 
     public AppUserResponse addStepsToUser(AppUser user, int steps, LocalDate date) {
