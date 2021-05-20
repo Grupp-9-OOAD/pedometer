@@ -1,5 +1,6 @@
 package com.example.pedometer.model;
 
+import com.example.pedometer.DTO.TeamResponse;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -23,4 +24,10 @@ public class Team {
 
     @OneToMany
     private List<AppUser> teamMembers;
+
+    public TeamResponse toResponse(){
+        return new TeamResponse()
+                .setTeamMembers(this.getTeamMembers())
+                .setTeamName(this.getTeamName());
+    }
 }
