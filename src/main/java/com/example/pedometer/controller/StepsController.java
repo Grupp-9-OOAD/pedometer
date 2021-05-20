@@ -21,6 +21,7 @@ public class StepsController {
 
     @PostMapping("/add")
     public ResponseEntity<Steps> addSteps(@RequestBody int steps, LocalDate date){
-        return ResponseEntity.ok(stepService.addSteps(steps, date));
+//        return ResponseEntity.ok(stepService.addSteps(steps, date));
+        return null;
     }
 }

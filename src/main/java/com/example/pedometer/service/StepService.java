@@ -20,6 +20,6 @@ public class StepService {
 
 
     public Object addSteps(int steps, LocalDate date) {
-
+        return null;
     }
 }
