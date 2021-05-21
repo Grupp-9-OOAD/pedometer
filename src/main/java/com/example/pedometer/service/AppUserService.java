@@ -6,6 +6,7 @@ import com.example.pedometer.model.Steps;
 import com.example.pedometer.repository.AppUserRepository;
 import com.example.pedometer.repository.StepsRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AppUserService {
 
     private final AppUserRepository appUserRepository;
@@ -60,6 +62,21 @@ public class AppUserService {
                 });
 
         return "User with email: " + email + " has been deleted";
+    }
+
+    public AppUserResponse validateLogin(String email, String password) {
+        AppUser appUser = appUserRepository.findByEmail(email)
+                .orElseThrow(() -> { throw new ResponseStatusException(HttpStatus.NO_CONTENT, "no user found");
+                });
+
+       log.info(">> appuser : {}", appUser);
+        if (appUser.getPassword().equals(password)){
+
+            return appUser.toResponse();
+        }else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     public AppUserResponse getAppUserByEmail(String email) {
@@ -105,9 +122,30 @@ public class AppUserService {
                 .toResponse();
     }
 
+    public Integer getStepsOfAppUser(String email) {
+
+        Optional<AppUser> appUser = appUserRepository.findByEmail(email);
+
+        if (appUser.isPresent()){
+            return getSteps(appUser.get());
+        }else {
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "no user found");
+        }
+
+    }
+
+    private Integer getSteps(AppUser appUser){
+        return appUser.getSteps().stream()
+                .mapToInt(Steps::getSteps)
+                .sum();
+    }
+
     private void validateAppUser(AppUser appUser) {
         if (appUser.getEmail() == null || appUser.getFirstName() == null || appUser.getLastName() == null || appUser.getPassword() == null) {
             throw new ResponseStatusException(HttpStatus.NO_CONTENT, "user need to have a firstname, lastname, email and password");
         }
     }
+
+
+
 }
