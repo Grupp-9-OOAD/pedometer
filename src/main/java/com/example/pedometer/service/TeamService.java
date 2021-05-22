@@ -50,7 +50,7 @@ public class TeamService {
     }
 
     private void validateTeam(Team team) {
-        if (team.getTeamName() == null || team.getTeamName().isBlank() || team.getTeamName().isBlank()){
+        if (team.getTeamName() == null || team.getTeamName().isBlank()){
             throw new ResponseStatusException(HttpStatus.NO_CONTENT, "no team name found");
         }
 
