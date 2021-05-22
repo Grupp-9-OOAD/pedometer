@@ -50,12 +50,29 @@ public class AppUserService {
         }
     }
 
+    public AppUserResponse updatePassword(String password, String email) {
+
+        Optional<AppUser> existingAppUser = appUserRepository.findByEmail(email);
+
+        if (existingAppUser.isPresent()) {
+            existingAppUser.get()
+                    .setPassword(password);
+            return appUserRepository.save(existingAppUser.get())
+                    .toResponse();
+        } else {
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "no user found");
+        }
+
+    }
+
     public String deleteAppUser(String email, String password) {
 
         appUserRepository.findByEmail(email)
                 .ifPresentOrElse(appUser -> {
                     if (appUser.getPassword().equals(password)) {
                         appUserRepository.deleteById(appUser.getId());
+                    }else {
+                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
                     }
                 }, () -> {
                     throw new ResponseStatusException(HttpStatus.CONFLICT, "email does not exist");

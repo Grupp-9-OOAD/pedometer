@@ -41,6 +41,12 @@ public class AppUserController {
         return ResponseEntity.ok(appUserService.addAppUser(appUser));
     }
 
+    @GetMapping("/update/password")
+    public ResponseEntity<AppUserResponse> updatePassword(@RequestParam String password,
+                                                          @RequestParam String email) {
+        return ResponseEntity.ok(appUserService.updatePassword(password,email));
+    }
+
     @GetMapping("/delete")
     public ResponseEntity<String> deleteAppUser(@RequestParam String email,
                                                 @RequestParam String password) {
