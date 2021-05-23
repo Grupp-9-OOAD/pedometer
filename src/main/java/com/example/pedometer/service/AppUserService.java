@@ -62,7 +62,6 @@ public class AppUserService {
         } else {
             throw new ResponseStatusException(HttpStatus.NO_CONTENT, "no user found");
         }
-
     }
 
     public String deleteAppUser(String email, String password) {
