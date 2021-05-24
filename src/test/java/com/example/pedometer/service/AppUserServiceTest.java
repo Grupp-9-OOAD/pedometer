@@ -130,6 +130,12 @@ public class AppUserServiceTest {
         String password = "mickey123";
         String wrongPassword = "wrong123";
 
+/*        when(appUserService.deleteAppUser(email, password))
+                .thenReturn("User with email: " + email + " has been deleted");
+
+
+        assertEquals("User with email: " + email + " has been deleted", appUserService.deleteAppUser(email, password));*/
+
         assertThrows(ResponseStatusException.class, () -> appUserService.deleteAppUser(email, wrongPassword));
 
         assertThrows(ResponseStatusException.class, () -> appUserService.deleteAppUser(wrongmail, password));
