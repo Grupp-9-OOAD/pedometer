@@ -82,14 +82,17 @@ public class AppUserService {
         return "User with email: " + email + " has been deleted";
     }
     
-    public String removeTeam(String email, String teamName) {
+    public String removeFromTeam(String email, String teamName) {
         teamRepository.findByTeamName(teamName)
                 .ifPresentOrElse(team -> {
                     List<AppUser> teamMembers = team.getTeamMembers();
                     teamMembers.stream()
                             .filter(member -> member.getEmail().equalsIgnoreCase(email))
                             .findFirst()
-                            .ifPresentOrElse(teamMembers::remove, () -> {
+                            .ifPresentOrElse(member -> {
+                                team.getTeamMembers().remove(member);
+                                teamRepository.save(team);
+                            }, () -> {
                                 throw new ResponseStatusException(HttpStatus.CONFLICT, "Member does not exist in team");
                             });
                 }, () -> {

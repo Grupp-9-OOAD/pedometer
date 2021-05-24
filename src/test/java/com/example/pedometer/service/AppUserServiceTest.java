@@ -77,6 +77,21 @@ public class AppUserServiceTest {
     }
 
     @Test
+    void removeTeamTest() {
+        assertEquals(3, mockTeam.getTeamMembers().size());
+
+        when(mockTeamRepository.findByTeamName(mockTeam.getTeamName()))
+                .thenReturn(java.util.Optional.ofNullable(mockTeam));
+        assertEquals(mockTeamRepository.findByTeamName(mockTeam.getTeamName()).get().getTeamName(), "Mocked");
+        assertEquals(3, mockTeamRepository.findByTeamName(mockTeam.getTeamName()).get().getTeamMembers().size());
+        appUserService.removeFromTeam(mockUser1.getEmail(), mockTeam.getTeamName());
+        assertEquals(2, mockTeamRepository.findByTeamName(mockTeam.getTeamName()).get().getTeamMembers().size());
+        
+        verify(mockTeamRepository, times(4)).findByTeamName(anyString());
+        verify(mockTeamRepository, times(1)).save(any());
+    }
+    
+    @Test
     void getAllUsersTest() {
 
         int notCorrectListSize = 1000;
