@@ -3,6 +3,7 @@ package com.example.pedometer.service;
 
 import com.example.pedometer.DTO.AppUserResponse;
 import com.example.pedometer.model.AppUser;
+import com.example.pedometer.model.Team;
 import com.example.pedometer.repository.AppUserRepository;
 import com.example.pedometer.repository.StepsRepository;
 import com.example.pedometer.repository.TeamRepository;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,6 +41,8 @@ public class AppUserServiceTest {
     AppUser mockUser1;
     AppUser mockUser2;
     AppUser mockUser3;
+    
+    Team mockTeam;
 
     @BeforeEach
     void init() {
@@ -57,7 +61,16 @@ public class AppUserServiceTest {
                 .setLastName("Goof")
                 .setPassword("goofy123")
                 .setEmail("goofy@email.com");
-
+        
+        List<AppUser> mockedMembers = new ArrayList<>();
+        mockedMembers.add(mockUser1);
+        mockedMembers.add(mockUser2);
+        mockedMembers.add(mockUser3);
+        
+        mockTeam = new Team()
+                .setTeamName("Mocked")
+                .setTeamMembers(mockedMembers);
+        
         mockList = Arrays.asList(mockUser1,mockUser2,mockUser3);
 
         appUserService = new AppUserService(mockAppUserRepository, mockStepsRepository, mockTeamRepository);
