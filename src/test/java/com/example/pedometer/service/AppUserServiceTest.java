@@ -11,12 +11,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -118,6 +120,22 @@ public class AppUserServiceTest {
 
         verify(mockAppUserRepository, times(1))
                 .findByEmail(anyString());
+    }
+
+    @Test
+    void deleteUserTest() {
+
+        String email = "mickey@email.com";
+        String wrongmail = "wrong@email.com";
+        String password = "mickey123";
+        String wrongPassword = "wrong123";
+
+        assertThrows(ResponseStatusException.class, () -> appUserService.deleteAppUser(email, wrongPassword));
+
+        assertThrows(ResponseStatusException.class, () -> appUserService.deleteAppUser(wrongmail, password));
+
+        verify(mockAppUserRepository, times(1))
+                .deleteById(any());
     }
 
 
