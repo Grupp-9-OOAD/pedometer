@@ -91,7 +91,6 @@ public class AppUserServiceTest {
 
         verify(mockTeamRepository, times(4)).findByTeamName(anyString());
         verify(mockTeamRepository, times(1)).save(any());
-        appUserService = new AppUserService(mockAppUserRepository, mockStepsRepository);
 
 
     }
