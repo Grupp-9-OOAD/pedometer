@@ -134,7 +134,7 @@ public class AppUserServiceTest {
 
         assertThrows(ResponseStatusException.class, () -> appUserService.deleteAppUser(wrongmail, password));
 
-        verify(mockAppUserRepository, times(1))
+        verify(mockAppUserRepository, times(0))
                 .deleteById(any());
     }
 
