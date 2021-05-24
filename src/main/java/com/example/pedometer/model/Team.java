@@ -26,6 +26,12 @@ public class Team {
     @OneToMany
     private List<AppUser> teamMembers = new ArrayList<>();
 
+    public void addTeamMember(AppUser teamMember) {
+        if(!teamMembers.contains(teamMember)) {
+            teamMembers.add(teamMember);
+        } else throw new IllegalArgumentException("User is already a member");
+    }
+
     public TeamResponse toResponse(){
         return new TeamResponse()
                 .setTeamMembers(this.getTeamMembers())
