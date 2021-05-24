@@ -59,6 +59,8 @@ public class AppUserServiceTest {
         mockList = Arrays.asList(mockUser1,mockUser2,mockUser3);
 
         appUserService = new AppUserService(mockAppUserRepository, mockStepsRepository);
+
+
     }
 
     @Test
@@ -130,17 +132,16 @@ public class AppUserServiceTest {
         String password = "mickey123";
         String wrongPassword = "wrong123";
 
-/*        when(appUserService.deleteAppUser(email, password))
-                .thenReturn("User with email: " + email + " has been deleted");
+        when(mockAppUserRepository.findByEmail(mockUser1.getEmail()))
+                .thenReturn(java.util.Optional.ofNullable(mockUser1));
 
-
-        assertEquals("User with email: " + email + " has been deleted", appUserService.deleteAppUser(email, password));*/
+        assertEquals("User with email: " + email + " has been deleted", appUserService.deleteAppUser(email, password));
 
         assertThrows(ResponseStatusException.class, () -> appUserService.deleteAppUser(email, wrongPassword));
 
         assertThrows(ResponseStatusException.class, () -> appUserService.deleteAppUser(wrongmail, password));
 
-        verify(mockAppUserRepository, times(0))
+        verify(mockAppUserRepository, times(1))
                 .deleteById(any());
     }
 
