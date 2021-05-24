@@ -15,6 +15,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/users")
+@CrossOrigin
 public class AppUserController {
 
     private final AppUserService appUserService;
@@ -22,6 +23,12 @@ public class AppUserController {
     @GetMapping
     public ResponseEntity<List<AppUserResponse>> getAllAppUsers() {
         return ResponseEntity.ok(appUserService.getAll());
+    }
+
+    @GetMapping("/validate/login")
+    public ResponseEntity<AppUserResponse> validateLogin(@RequestParam String email,
+                                                @RequestParam String password) {
+        return ResponseEntity.ok(appUserService.validateLogin(email, password));
     }
 
     @GetMapping("/get/one")
@@ -34,10 +41,21 @@ public class AppUserController {
         return ResponseEntity.ok(appUserService.addAppUser(appUser));
     }
 
+    @GetMapping("/update/password")
+    public ResponseEntity<AppUserResponse> updatePassword(@RequestParam String password,
+                                                          @RequestParam String email) {
+        return ResponseEntity.ok(appUserService.updatePassword(password,email));
+    }
+
     @GetMapping("/delete")
     public ResponseEntity<String> deleteAppUser(@RequestParam String email,
                                                 @RequestParam String password) {
         return ResponseEntity.ok(appUserService.deleteAppUser(email, password));
+    }
+
+    @GetMapping("/get/all/steps")
+    public ResponseEntity<Integer> getAllSteps(@RequestParam String email){
+        return ResponseEntity.ok(appUserService.getStepsOfAppUser(email));
     }
 
     @PostMapping("/add/steps")
