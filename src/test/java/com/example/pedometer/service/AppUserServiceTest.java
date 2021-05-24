@@ -5,6 +5,7 @@ import com.example.pedometer.DTO.AppUserResponse;
 import com.example.pedometer.model.AppUser;
 import com.example.pedometer.repository.AppUserRepository;
 import com.example.pedometer.repository.StepsRepository;
+import com.example.pedometer.repository.TeamRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,6 +28,9 @@ public class AppUserServiceTest {
 
     @Mock
     StepsRepository mockStepsRepository;
+    
+    @Mock
+    TeamRepository mockTeamRepository;
 
     AppUserService appUserService;
 
@@ -56,7 +60,7 @@ public class AppUserServiceTest {
 
         mockList = Arrays.asList(mockUser1,mockUser2,mockUser3);
 
-        appUserService = new AppUserService(mockAppUserRepository, mockStepsRepository);
+        appUserService = new AppUserService(mockAppUserRepository, mockStepsRepository, mockTeamRepository);
     }
 
     @Test

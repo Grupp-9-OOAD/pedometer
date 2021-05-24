@@ -5,6 +5,7 @@ import com.example.pedometer.model.AppUser;
 import com.example.pedometer.model.Steps;
 import com.example.pedometer.repository.AppUserRepository;
 import com.example.pedometer.repository.StepsRepository;
+import com.example.pedometer.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,9 @@ public class AppUserService {
     private final AppUserRepository appUserRepository;
 
     private final StepsRepository stepsRepository;
-
+    
+    private final TeamRepository teamRepository;
+    
     public List<AppUserResponse> getAll() {
         return appUserRepository.findAll().stream()
                 .map(AppUser::toResponse)
@@ -78,13 +81,27 @@ public class AppUserService {
 
         return "User with email: " + email + " has been deleted";
     }
+    
+    public String removeTeam(String email, String teamName) {
+        teamRepository.findByTeamName(teamName)
+                .ifPresentOrElse(team -> {
+                    List<AppUser> teamMembers = team.getTeamMembers();
+                    teamMembers.stream()
+                            .filter(member -> member.getEmail().equalsIgnoreCase(email))
+                            .findFirst()
+                            .ifPresentOrElse(teamMembers::remove, () -> {
+                                throw new ResponseStatusException(HttpStatus.CONFLICT, "Member does not exist in team");
+                            });
+                }, () -> {
+                    throw new ResponseStatusException(HttpStatus.CONFLICT, "team name does not exist");
+                });
+        return String.format("User with email \"%s\" has been removed from team %s.", email, teamName);
+    }
 
     public AppUserResponse validateLogin(String email, String password) {
         AppUser appUser = appUserRepository.findByEmail(email)
                 .orElseThrow(() -> { throw new ResponseStatusException(HttpStatus.NO_CONTENT, "no user found");
                 });
-
-       log.info(">> appuser : {}", appUser);
         if (appUser.getPassword().equals(password)){
 
             return appUser.toResponse();
