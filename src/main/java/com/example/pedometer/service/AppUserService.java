@@ -39,8 +39,7 @@ public class AppUserService {
         if (existingAppUser.isPresent()) {
             existingAppUser.get()
                     .setFirstName(appUser.getFirstName())
-                    .setLastName(appUser.getLastName())
-                    .setPassword(appUser.getPassword());
+                    .setLastName(appUser.getLastName());
             return appUserRepository.save(existingAppUser.get())
                     .toResponse();
         } else {
