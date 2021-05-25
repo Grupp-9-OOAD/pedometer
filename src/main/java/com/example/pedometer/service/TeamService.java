@@ -36,7 +36,7 @@ public class TeamService {
 
         Team currentTeam = teamRepository.findByTeamName(teamName)
                 .orElseThrow(() -> {
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "no team found");
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Could not find team");
                 });
         appUserRepository.findByEmail(userEmail)
                         .ifPresent(appUser -> {
@@ -50,12 +50,12 @@ public class TeamService {
 
     private void validateTeam(Team team) {
         if (team.getTeamName() == null || team.getTeamName().isBlank()){
-            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "no team name found");
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Team name is missing");
         }
 
         teamRepository.findByTeamName(team.getTeamName())
                 .ifPresent(team1 -> {
-                    throw new ResponseStatusException(HttpStatus.CONFLICT, "team name is taken");
+                    throw new ResponseStatusException(HttpStatus.CONFLICT, "Team name is taken");
                 });
 
     }

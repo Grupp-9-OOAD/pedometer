@@ -60,7 +60,7 @@ public class AppUserService {
             return appUserRepository.save(existingAppUser.get())
                     .toResponse();
         } else {
-            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "no user found");
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Could not find user");
         }
     }
 
@@ -74,7 +74,7 @@ public class AppUserService {
             return appUserRepository.save(existingAppUser.get())
                     .toResponse();
         } else {
-            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "no user found");
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Could not find user");
         }
     }
 
@@ -88,7 +88,7 @@ public class AppUserService {
                         throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
                     }
                 }, () -> {
-                    throw new ResponseStatusException(HttpStatus.CONFLICT, "email does not exist");
+                    throw new ResponseStatusException(HttpStatus.CONFLICT, "Email does not exist");
                 });
 
         return "User with email: " + email + " has been deleted";
@@ -108,14 +108,14 @@ public class AppUserService {
                                 throw new ResponseStatusException(HttpStatus.CONFLICT, "Member does not exist in team");
                             });
                 }, () -> {
-                    throw new ResponseStatusException(HttpStatus.CONFLICT, "team name does not exist");
+                    throw new ResponseStatusException(HttpStatus.CONFLICT, "Team name does not exist");
                 });
         return String.format("User with email \"%s\" has been removed from team %s.", email, teamName);
     }
 
     public AppUserResponse validateLogin(String email, String password) {
         AppUser appUser = appUserRepository.findByEmail(email)
-                .orElseThrow(() -> { throw new ResponseStatusException(HttpStatus.NO_CONTENT, "no user found");
+                .orElseThrow(() -> { throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Could not find user");
                 });
         if (appUser.getPassword().equals(password)){
 
@@ -129,7 +129,7 @@ public class AppUserService {
     public AppUserResponse getAppUserByEmail(String email) {
 
         AppUser appUser = appUserRepository.findByEmail(email)
-        .orElseThrow(() -> { throw new ResponseStatusException(HttpStatus.NO_CONTENT, "no user found");
+        .orElseThrow(() -> { throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Could not find user");
         });
 
         return appUser.toResponse();
@@ -176,7 +176,7 @@ public class AppUserService {
         if (appUser.isPresent()){
             return getSteps(appUser.get());
         }else {
-            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "no user found");
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No such user found");
         }
     }
 
@@ -188,7 +188,7 @@ public class AppUserService {
 
     private void validateAppUser(AppUser appUser) {
         if (appUser.getEmail() == null || appUser.getFirstName() == null || appUser.getLastName() == null || appUser.getPassword() == null) {
-            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "user need to have a firstname, lastname, email and password");
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "User need to have a firstname, lastname, email and password");
         }
     }
 
