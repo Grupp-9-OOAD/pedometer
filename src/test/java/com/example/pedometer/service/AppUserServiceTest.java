@@ -15,7 +15,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
 import java.time.LocalDate;
@@ -51,7 +50,6 @@ public class AppUserServiceTest {
     Team mockTeam;
 
     Steps mockStep1;
-    Steps mockStep2;
 
     @BeforeEach
     void init() {
@@ -225,7 +223,6 @@ public class AppUserServiceTest {
         verify(mockAppUserRepository, times(1))
                 .deleteById(any());
     }
-
 
 
 }
