@@ -2,6 +2,7 @@ package com.example.pedometer.service;
 
 
 import com.example.pedometer.DTO.AppUserResponse;
+import com.example.pedometer.DTO.TeamResponse;
 import com.example.pedometer.model.AppUser;
 import com.example.pedometer.model.Steps;
 import com.example.pedometer.model.Team;
@@ -53,6 +54,7 @@ public class AppUserServiceTest {
     AppUser mockUser3;
 
     Team mockTeam;
+    Team mockTeam2;
 
     Steps mockStep1;
 
@@ -83,6 +85,10 @@ public class AppUserServiceTest {
 
         mockTeam = new Team()
                 .setTeamName("Mocked")
+                .setTeamMembers(mockedMembers);
+
+        mockTeam2 = new Team()
+                .setTeamName("Mocked2")
                 .setTeamMembers(mockedMembers);
 
         mockList = Arrays.asList(mockUser1,mockUser2,mockUser3);
@@ -280,5 +286,24 @@ public class AppUserServiceTest {
         assertThrows(ResponseStatusException.class, () -> appUserService.addAppUser(mockUser1));
 
         verify(mockAppUserRepository, times(1)).findByEmail(anyString());
+    }
+
+    @Test
+    void getAllTeamsTest() {
+        when(mockTeamRepository.findAll())
+                .thenReturn(Arrays.asList(mockTeam, mockTeam2));
+
+        when(mockAppUserRepository.findByEmail(mockUser1.getEmail()))
+                .thenReturn(java.util.Optional.ofNullable(mockUser1));
+
+        when(mockAppUserRepository.findByEmail(mockUser2.getEmail()))
+                .thenReturn(Optional.empty());
+
+        assertThrows(ResponseStatusException.class, () -> appUserService.getAllTeams(mockUser2.getEmail()));
+
+        List<Team> allTeams = appUserService.getAllTeams(mockUser1.getEmail());
+
+        assertEquals(2, allTeams.size());
+
     }
 }

@@ -1,7 +1,9 @@
 package com.example.pedometer.controller;
 
 import com.example.pedometer.DTO.AppUserResponse;
+import com.example.pedometer.DTO.TeamResponse;
 import com.example.pedometer.model.AppUser;
+import com.example.pedometer.model.Team;
 import com.example.pedometer.service.AppUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -70,6 +73,13 @@ public class AppUserController {
                                                                  @Nullable
                                                                  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         return ResponseEntity.ok(appUserService.addStepsToUser(appUser, steps, date));
+    }
+
+    @GetMapping("/getUserTeams")
+    public ResponseEntity<List<TeamResponse>> getAllTeams(@RequestParam String email){
+
+        List<Team> allTeams = appUserService.getAllTeams(email);
+        return ResponseEntity.ok(allTeams.stream().map(Team::toResponse).collect(Collectors.toList()));
     }
 
 }
