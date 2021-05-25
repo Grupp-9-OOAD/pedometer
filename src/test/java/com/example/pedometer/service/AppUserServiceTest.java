@@ -79,7 +79,7 @@ public class AppUserServiceTest {
     }
 
     @Test
-    void removeTeamTest() {
+    void removeUserFromTeamTest() {
         assertEquals(3, mockTeam.getTeamMembers().size());
 
         when(mockTeamRepository.findByTeamName(mockTeam.getTeamName()))
