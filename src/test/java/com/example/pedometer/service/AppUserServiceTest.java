@@ -3,18 +3,22 @@ package com.example.pedometer.service;
 
 import com.example.pedometer.DTO.AppUserResponse;
 import com.example.pedometer.model.AppUser;
+import com.example.pedometer.model.Steps;
 import com.example.pedometer.model.Team;
 import com.example.pedometer.repository.AppUserRepository;
 import com.example.pedometer.repository.StepsRepository;
 import com.example.pedometer.repository.TeamRepository;
+import org.hamcrest.Condition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -39,6 +43,7 @@ public class AppUserServiceTest {
     AppUserService appUserService;
 
     List<AppUser> mockList;
+
 
     AppUser mockUser1;
     AppUser mockUser2;
@@ -74,6 +79,7 @@ public class AppUserServiceTest {
                 .setTeamMembers(mockedMembers);
 
         mockList = Arrays.asList(mockUser1,mockUser2,mockUser3);
+
 
         appUserService = new AppUserService(mockAppUserRepository, mockStepsRepository, mockTeamRepository);
     }
@@ -178,5 +184,43 @@ public class AppUserServiceTest {
     }
 
 
+    @Test
+    void addStepsToUserTest() {
+        List<Steps> mockStepsList= new ArrayList<>();
+        mockUser1.setSteps(mockStepsList);
 
+        Steps mockSteps = new Steps();
+        mockSteps.setDate(LocalDate.now());
+        mockSteps.setSteps(500);
+
+
+
+        when(mockAppUserRepository.findByEmail(mockUser1.getEmail()))
+                .thenReturn(java.util.Optional.ofNullable(mockUser1));
+
+
+        when(mockAppUserRepository.save(mockUser1))
+                .thenReturn(mockUser1);
+
+
+        mockStepsList.add(mockSteps);
+        LocalDate actual = appUserService.addStepsToUser(mockUser1, 500, null).getSteps().get(0).getDate();
+        LocalDate expected = LocalDate.now();
+
+        assertThrows(ResponseStatusException.class, () -> appUserService.addStepsToUser(mockUser2, 300, LocalDate.now()));
+
+        assertEquals(expected,actual);
+
+        int expectedListSize = mockUser1.getSteps().size() + 1;
+        int expectedListSize2 = mockUser1.getSteps().size();
+
+        int actualListSize2 = appUserService.addStepsToUser(mockUser1, 500, LocalDate.now()).getSteps().size();
+
+        int actualListSize = appUserService.addStepsToUser(mockUser1, 500, LocalDate.of(2021,4,30) ).getSteps().size();
+
+
+        assertEquals(expectedListSize , actualListSize );
+        assertEquals(expectedListSize2 , actualListSize2 );
+
+    }
 }
