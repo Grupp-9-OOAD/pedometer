@@ -40,15 +40,27 @@ public class AppUserService {
         Optional<AppUser> existingAppUser = appUserRepository.findByEmail(appUser.getEmail());
 
         if (existingAppUser.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already in use");
+        } else {
+            validateAppUser(appUser);
+            return appUserRepository.save(appUser)
+                    .toResponse();
+        }
+    }
+
+    @Transactional
+    public AppUserResponse updateUser(AppUser appUser) {
+
+        Optional<AppUser> existingAppUser = appUserRepository.findByEmail(appUser.getEmail());
+
+        if (existingAppUser.isPresent()) {
             existingAppUser.get()
                     .setFirstName(appUser.getFirstName())
                     .setLastName(appUser.getLastName());
             return appUserRepository.save(existingAppUser.get())
                     .toResponse();
         } else {
-            validateAppUser(appUser);
-            return appUserRepository.save(appUser)
-                    .toResponse();
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "no user found");
         }
     }
 
