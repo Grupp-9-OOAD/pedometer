@@ -1,7 +1,6 @@
 package com.example.pedometer.controller;
 
 import com.example.pedometer.DTO.TeamResponse;
-import com.example.pedometer.model.AppUser;
 import com.example.pedometer.model.Team;
 import com.example.pedometer.service.TeamService;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +29,6 @@ public class TeamController {
     @PostMapping("/add/user")
     public ResponseEntity<TeamResponse> addUserToTeam(@RequestParam String userEmail,
                                                       @RequestParam String teamName){
-        return ResponseEntity.ok(teamService.AddUserToTeam(userEmail, teamName));
+        return ResponseEntity.ok(teamService.addUserToTeam(userEmail, teamName));
     }
 }

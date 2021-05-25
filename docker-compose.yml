@@ -1,0 +1,24 @@
+version: '3'
+services:
+  postgres-db:
+    image: postgres:alpine
+    container_name: step_database
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password123
+
+  spring_app:
+    build: .
+    container_name: pedometer
+    ports:
+      - 8080:8080
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password123
+      SPRING_DB_URL: jdbc:postgresql://postgres-db:5432/
+      SPRING_JPA_HIBERNATE_DDL-AUTO: update
+      SPRING_PROFILES_ACTIVE: prod
+    depends_on:
+      - postgres-db
