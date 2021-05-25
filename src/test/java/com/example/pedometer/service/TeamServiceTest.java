@@ -3,7 +3,6 @@ package com.example.pedometer.service;
 import com.example.pedometer.model.AppUser;
 import com.example.pedometer.model.Team;
 import com.example.pedometer.repository.AppUserRepository;
-import com.example.pedometer.repository.StepsRepository;
 import com.example.pedometer.repository.TeamRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,7 +11,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,8 +28,6 @@ public class TeamServiceTest {
     TeamRepository mockTeamRepository;
     
     TeamService teamService;
-    
-    List<AppUser> mockList;
     
     AppUser mockUser1;
     AppUser mockUser2;
