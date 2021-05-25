@@ -3,6 +3,7 @@ package com.example.pedometer.service;
 
 import com.example.pedometer.DTO.AppUserResponse;
 import com.example.pedometer.model.AppUser;
+import com.example.pedometer.model.Steps;
 import com.example.pedometer.repository.AppUserRepository;
 import com.example.pedometer.repository.StepsRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,9 +12,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -36,8 +40,13 @@ public class AppUserServiceTest {
     AppUser mockUser2;
     AppUser mockUser3;
 
+    Steps mockStep1;
+    Steps mockStep2;
+
     @BeforeEach
     void init() {
+
+
         mockUser1 = new AppUser()
                 .setFirstName("Mickey")
                 .setLastName("Mouse")
@@ -53,6 +62,8 @@ public class AppUserServiceTest {
                 .setLastName("Goof")
                 .setPassword("goofy123")
                 .setEmail("goofy@email.com");
+
+
 
         mockList = Arrays.asList(mockUser1,mockUser2,mockUser3);
 
@@ -115,6 +126,46 @@ public class AppUserServiceTest {
 
         verify(mockAppUserRepository, times(1))
                 .save(any());
+
+        verify(mockAppUserRepository, times(1))
+                .findByEmail(anyString());
+    }
+
+    @Test
+    void getStepsOfIfAppUserFound() {
+
+        String userEmail = mockUser1.getEmail();
+        int expected = 100;
+        int notExpected = 100000;
+
+        mockStep1 = new Steps()
+                .setSteps(expected)
+                .setDate(LocalDate.of(2020, 1, 5));
+
+        mockUser1.getSteps().add(mockStep1);
+
+        when(mockAppUserRepository.findByEmail(userEmail))
+                .thenReturn(Optional.of(mockUser1));
+
+        int actual = appUserService.getStepsOfAppUser(userEmail);
+
+        assertEquals(expected,actual);
+
+        assertNotEquals(notExpected,actual);
+
+        verify(mockAppUserRepository, times(1))
+                .findByEmail(anyString());
+    }
+
+    @Test
+    void getStepsOfIfNotAppUserFound() {
+
+        String userEmail = mockUser1.getEmail();
+
+        when(mockAppUserRepository.findByEmail(userEmail))
+                .thenReturn(null);
+
+        assertThrows(NullPointerException.class, () -> appUserService.getStepsOfAppUser(mockUser1.getEmail()));
 
         verify(mockAppUserRepository, times(1))
                 .findByEmail(anyString());
