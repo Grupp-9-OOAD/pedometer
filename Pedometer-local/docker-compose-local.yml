@@ -1,0 +1,10 @@
+version: '3'
+services:
+  postgres-db:
+    image: postgres:alpine
+    container_name: step_database_local
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: localPostgres
+      POSTGRES_PASSWORD: localPassword
