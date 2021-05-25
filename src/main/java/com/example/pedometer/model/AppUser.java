@@ -38,4 +38,8 @@ public class AppUser {
                 .setSteps(this.steps);
     }
 
+    public void addStepsToUser(Steps steps){
+        this.steps.add(steps);
+
+    }
 }
