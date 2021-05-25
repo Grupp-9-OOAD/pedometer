@@ -271,4 +271,14 @@ public class AppUserServiceTest {
         assertEquals(expectedListSize2 , actualListSize2 );
 
     }
+
+    @Test
+    void addingNewDuplicateUserThrowsTest() {
+        when(mockAppUserRepository.findByEmail(mockUser1.getEmail()))
+                .thenReturn(Optional.of(mockUser1));
+
+        assertThrows(ResponseStatusException.class, () -> appUserService.addAppUser(mockUser1));
+
+        verify(mockAppUserRepository, times(1)).findByEmail(anyString());
+    }
 }
