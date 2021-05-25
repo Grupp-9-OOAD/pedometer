@@ -33,7 +33,7 @@ public class TeamService {
                 .toResponse();
     }
 
-    public TeamResponse AddUserToTeam(String userEmail, String teamName) {
+    public TeamResponse addUserToTeam(String userEmail, String teamName) {
 
         Team currentTeam = teamRepository.findByTeamName(teamName)
                 .orElseThrow(() -> {
