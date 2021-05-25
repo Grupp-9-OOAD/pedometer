@@ -1,8 +1,10 @@
 package com.example.pedometer.service;
 
 import com.example.pedometer.DTO.AppUserResponse;
+import com.example.pedometer.DTO.TeamResponse;
 import com.example.pedometer.model.AppUser;
 import com.example.pedometer.model.Steps;
+import com.example.pedometer.model.Team;
 import com.example.pedometer.repository.AppUserRepository;
 import com.example.pedometer.repository.StepsRepository;
 import com.example.pedometer.repository.TeamRepository;
@@ -193,5 +195,21 @@ public class AppUserService {
     }
 
 
+    public List<Team> getAllTeams(String email) {
 
+        List<Team> allTeams = teamRepository.findAll();
+
+        Optional<AppUser> appUser = appUserRepository.findByEmail(email);
+
+
+        if (appUser.isPresent()){
+            return allTeams.stream()
+                    .filter(team -> team.getTeamMembers().contains(appUser.get()))
+                    .collect(Collectors.toList());
+
+        }else{
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No such user");
+        }
+
+    }
 }
