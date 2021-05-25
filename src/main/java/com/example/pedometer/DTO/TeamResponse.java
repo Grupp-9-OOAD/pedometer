@@ -22,5 +22,7 @@ public class TeamResponse {
 
     private String teamName;
 
+    private Long totalSteps;
+
     private List<AppUser> teamMembers;
 }
