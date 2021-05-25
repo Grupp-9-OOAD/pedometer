@@ -39,11 +39,17 @@ public class TeamService {
                 .orElseThrow(() -> {
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "no team found");
                 });
+
         appUserRepository.findByEmail(userEmail)
                         .ifPresent(appUser -> {
+                            if (currentTeam.getTeamMembers().contains(appUser)){
+                                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You are already a member");
+                            }
                             currentTeam.getTeamMembers().add(appUser);
                             teamRepository.save(currentTeam);
                         });
+
+
 
         return currentTeam
                 .toResponse();
