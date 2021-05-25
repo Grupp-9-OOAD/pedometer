@@ -166,7 +166,6 @@ public class AppUserService {
         }else {
             throw new ResponseStatusException(HttpStatus.NO_CONTENT, "no user found");
         }
-
     }
 
     private Integer getSteps(AppUser appUser){

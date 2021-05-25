@@ -5,6 +5,7 @@ import com.example.pedometer.DTO.AppUserResponse;
 import com.example.pedometer.model.AppUser;
 import com.example.pedometer.model.Steps;
 import com.example.pedometer.model.Team;
+import com.example.pedometer.model.Steps;
 import com.example.pedometer.repository.AppUserRepository;
 import com.example.pedometer.repository.StepsRepository;
 import com.example.pedometer.repository.TeamRepository;
@@ -20,8 +21,10 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -51,8 +54,12 @@ public class AppUserServiceTest {
 
     Team mockTeam;
 
+    Steps mockStep1;
+
     @BeforeEach
     void init() {
+
+
         mockUser1 = new AppUser()
                 .setFirstName("Mickey")
                 .setLastName("Mouse")
@@ -163,6 +170,46 @@ public class AppUserServiceTest {
     }
 
     @Test
+    void getStepsOfIfAppUserFound() {
+
+        String userEmail = mockUser1.getEmail();
+        int expected = 100;
+        int notExpected = 100000;
+
+        mockStep1 = new Steps()
+                .setSteps(expected)
+                .setDate(LocalDate.of(2020, 1, 5));
+
+        mockUser1.getSteps().add(mockStep1);
+
+        when(mockAppUserRepository.findByEmail(userEmail))
+                .thenReturn(Optional.of(mockUser1));
+
+        int actual = appUserService.getStepsOfAppUser(userEmail);
+
+        assertEquals(expected,actual);
+
+        assertNotEquals(notExpected,actual);
+
+        verify(mockAppUserRepository, times(1))
+                .findByEmail(anyString());
+    }
+
+    @Test
+    void getStepsOfIfNotAppUserFound() {
+
+        String userEmail = mockUser1.getEmail();
+
+        when(mockAppUserRepository.findByEmail(userEmail))
+                .thenReturn(null);
+
+        assertThrows(NullPointerException.class, () -> appUserService.getStepsOfAppUser(mockUser1.getEmail()));
+
+        verify(mockAppUserRepository, times(1))
+                .findByEmail(anyString());
+    }
+
+    @Test
     void deleteUserTest() {
 
         String email = "mickey@email.com";
@@ -182,6 +229,7 @@ public class AppUserServiceTest {
         verify(mockAppUserRepository, times(1))
                 .deleteById(any());
     }
+
 
 
     @Test
