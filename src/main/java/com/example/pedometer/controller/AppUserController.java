@@ -82,4 +82,9 @@ public class AppUserController {
         return ResponseEntity.ok(allTeams.stream().map(Team::toResponse).collect(Collectors.toList()));
     }
 
+    @GetMapping("/leave/team")
+    public ResponseEntity<String> leaveTeam(@RequestParam String email, @RequestParam String teamName){
+        return ResponseEntity.ok(appUserService.removeFromTeam(email, teamName));
+    }
+
 }
