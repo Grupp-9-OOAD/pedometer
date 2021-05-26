@@ -42,16 +42,11 @@ public class TeamService {
         appUserRepository.findByEmail(userEmail)
                         .ifPresent(appUser -> {
                             if (currentTeam.getTeamMembers().contains(appUser)){
-                              
                                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You are already a member of this team");
-
                             }
                             currentTeam.getTeamMembers().add(appUser);
-                            teamRepository.save(currentTeam);
+                            teamRepository.save(currentTeam.updateTotalSteps());
                         });
-
-
-
         return currentTeam
                 .toResponse();
     }

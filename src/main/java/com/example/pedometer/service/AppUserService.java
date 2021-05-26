@@ -167,8 +167,11 @@ public class AppUserService {
             appUser.getSteps().add(stepsRepository.save(newSteps));
         }
 
-        return appUserRepository.save(appUser)
-                .toResponse();
+        appUserRepository.save(appUser);
+
+        getAllTeams(appUser.getEmail()).forEach(team -> teamRepository.save(team.updateTotalSteps()));
+
+        return appUser.toResponse();
     }
 
     public Integer getStepsOfAppUser(String email) {
