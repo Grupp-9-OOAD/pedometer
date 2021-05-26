@@ -10,7 +10,7 @@ services:
       POSTGRES_PASSWORD: password123
 
   spring_app:
-    build: .
+    image: wakelesstuna/pedometer:latest
     container_name: pedometer
     ports:
       - 8080:8080
