@@ -105,7 +105,7 @@ public class AppUserService {
                             .findFirst()
                             .ifPresentOrElse(member -> {
                                 team.getTeamMembers().remove(member);
-                                teamRepository.save(team);
+                                teamRepository.save(team.updateTotalSteps());
                             }, () -> {
                                 throw new ResponseStatusException(HttpStatus.CONFLICT, "Member does not exist in team");
                             });
