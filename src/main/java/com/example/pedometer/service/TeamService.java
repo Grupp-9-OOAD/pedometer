@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -65,9 +66,17 @@ public class TeamService {
 
 
     public HttpStatus deleteTeam(Team team) {
-        if(teamRepository.existsByTeamName(team.getTeamName())){
-            teamRepository.delete(teamRepository.findByTeamName(team.getTeamName()).get());
-            return HttpStatus.OK;
+
+        Optional<Team> teamToDelete = teamRepository.findByTeamName(team.getTeamName());
+
+
+        if(teamToDelete.isPresent()){
+            if (teamToDelete.get().getTeamMembers().isEmpty()){
+                teamRepository.delete(teamToDelete.get());
+                return HttpStatus.OK;
+            }else throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Can not delete team with members");
+
+
         }else throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Could not find team");
 
     }
