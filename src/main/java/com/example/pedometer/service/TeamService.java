@@ -64,4 +64,12 @@ public class TeamService {
     }
 
 
+    public HttpStatus deleteTeam(Team team) {
+        if(teamRepository.existsByTeamName(team.getTeamName())){
+            teamRepository.delete(team);
+            return HttpStatus.OK;
+        }else throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Could not find team");
+
+    }
+
 }
