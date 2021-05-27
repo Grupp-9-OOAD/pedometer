@@ -2,6 +2,7 @@ package com.example.pedometer.model;
 
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
+import org.springframework.web.server.ResponseStatusException;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -30,7 +31,7 @@ public class TeamTest {
 
         testTeam.addTeamMember(testUser);
 
-        assertThrows(IllegalArgumentException.class, () -> testTeam.addTeamMember(testUser));
+        assertThrows(ResponseStatusException.class, () -> testTeam.addTeamMember(testUser));
     }
 
 

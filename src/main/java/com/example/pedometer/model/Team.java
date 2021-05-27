@@ -3,6 +3,8 @@ package com.example.pedometer.model;
 import com.example.pedometer.DTO.TeamResponse;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -31,7 +33,7 @@ public class Team {
     public void addTeamMember(AppUser teamMember) {
         if(!teamMembers.contains(teamMember)) {
             teamMembers.add(teamMember);
-        } else throw new IllegalArgumentException("User is already a member");
+        } else throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You are already a member of this team");
     }
 
     public Team updateTotalSteps() {

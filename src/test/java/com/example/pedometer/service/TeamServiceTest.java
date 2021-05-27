@@ -9,11 +9,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -74,7 +77,33 @@ public class TeamServiceTest {
         assertEquals(2, mockTeamRepository.findByTeamName(mockTeam.getTeamName()).get().getTeamMembers().size());
         teamService.addUserToTeam(mockUser3.getEmail(), mockTeam.getTeamName());
         assertEquals(3, mockTeamRepository.findByTeamName(mockTeam.getTeamName()).get().getTeamMembers().size());
-        
+        verify(mockTeamRepository, times(3)).findByTeamName(anyString());
+        verify(mockTeamRepository, times(1)).save(any());
+    }
+
+    @Test
+    void addSameUserToTeamTestThrows() {
+        when(mockTeamRepository.findByTeamName(mockTeam.getTeamName()))
+                .thenReturn(java.util.Optional.ofNullable(mockTeam));
+        when(mockAppUserRepository.findByEmail(mockUser2.getEmail()))
+                .thenReturn(Optional.of(mockUser2));
+
+        assertThrows(ResponseStatusException.class, () -> teamService.addUserToTeam(mockUser2.getEmail(), mockTeam.getTeamName()));
+        verify(mockTeamRepository, times(0)).save(any());
+
+    }
+
+    @Test
+    void addTeamTest() {
+        when(mockTeamRepository.findByTeamName(mockTeam.getTeamName()))
+                .thenReturn(java.util.Optional.ofNullable(mockTeam));
+        when(mockAppUserRepository.findByEmail(mockUser3.getEmail()))
+                .thenReturn(java.util.Optional.ofNullable(mockUser3));
+
+        assertEquals(2, mockTeamRepository.findByTeamName(mockTeam.getTeamName()).get().getTeamMembers().size());
+        teamService.addUserToTeam(mockUser3.getEmail(), mockTeam.getTeamName());
+        assertEquals(3, mockTeamRepository.findByTeamName(mockTeam.getTeamName()).get().getTeamMembers().size());
+
         verify(mockTeamRepository, times(3)).findByTeamName(anyString());
         verify(mockTeamRepository, times(1)).save(any());
     }
