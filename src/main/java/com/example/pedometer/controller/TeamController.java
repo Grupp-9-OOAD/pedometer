@@ -4,6 +4,7 @@ import com.example.pedometer.DTO.TeamResponse;
 import com.example.pedometer.model.Team;
 import com.example.pedometer.service.TeamService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,5 +32,9 @@ public class TeamController {
     public ResponseEntity<TeamResponse> addUserToTeam(@RequestParam String userEmail,
                                                       @RequestParam String teamName){
         return ResponseEntity.ok(teamService.addUserToTeam(userEmail, teamName));
+    }
+    @PostMapping("/delete")
+    public ResponseEntity<HttpStatus> deleteTeam(@RequestBody Team team){
+        return ResponseEntity.ok(teamService.deleteTeam(team));
     }
 }
